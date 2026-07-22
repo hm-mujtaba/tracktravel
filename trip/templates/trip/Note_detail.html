@@ -1,84 +1,78 @@
-{% extends 'trip/_base.html' %}
-{% load static %}
+{% extends "trip/_base.html" %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto px-4 py-8">
-    <!-- Header with action buttons -->
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold text-gray-800">Note Details</h1>
-        <div class="flex space-x-3">
-            <a href="{% url 'note-update' note.pk %}" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-colors">
-                Edit Note
+<div class="max-w-5xl mx-auto">
+
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">{{ note.name }}</h1>
+            <p class="text-gray-500 mt-1">
+                {{ note.trip.city }}, {{ note.trip.country }}
+            </p>
+        </div>
+
+        <div class="flex gap-3">
+            <a href="{% url 'note-update' note.pk %}"
+               class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                Edit
             </a>
-            <form action="{% url 'note-delete' note.pk %}" method="POST" class="inline">
+
+            <form method="post" action="{% url 'note-delete' note.pk %}">
                 {% csrf_token %}
-                <button type="submit" class="px-4 py-2 bg-red-200 text-red-800 rounded-lg hover:bg-red-300 transition-colors">
-                    Delete Note
+                <button
+                    class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                    Delete
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Note Card -->
+
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <!-- Image Section -->
-        <div class="relative h-64 bg-gray-100">
-            {% if note.img %}
-                <img src="{{ note.img.url }}" alt="{{ note.name }}" class="w-full h-full object-cover">
-            {% else %}
-                <div class="w-full h-full flex flex-col items-center justify-center text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <p class="mt-2">No image uploaded</p>
-                </div>
-            {% endif %}
-        </div>
 
-        <!-- Content Section -->
-        <div class="p-6">
-            <div class="flex justify-between items-start mb-4">
-                <h2 class="text-2xl font-bold text-gray-800">{{ note.name }}</h2>
-                {% if note.type %}
-                <div class="flex items-center bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                    {{ note.type|title }}
-                </div>
-                {% endif %}
-            </div>
+        {% if note.img %}
+            <img src="{{ note.img.url }}"
+                 alt="{{ note.name }}"
+                 class="w-full h-80 object-cover">
+        {% endif %}
 
-            <!-- Rating -->
-            <div class="flex items-center mb-6">
-                <div class="flex mr-2">
+        <div class="p-8">
+
+            <div class="flex flex-wrap items-center gap-3 mb-6">
+
+                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
+                    {{ note.get_type_display }}
+                </span>
+
+                <span class="text-yellow-500 text-lg">
                     {% for i in "12345" %}
                         {% if forloop.counter <= note.rating %}
-                            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                            </svg>
+                            ★
+                        {% else %}
+                            ☆
                         {% endif %}
                     {% endfor %}
-                </div>
-                <span class="text-gray-600">{{ note.rating }}/5</span>
+                </span>
+
+                <span class="text-gray-500">
+                    {{ note.rating }}/5
+                </span>
+
             </div>
 
-            <!-- Description -->
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold text-gray-700 mb-2">Description</h3>
-                <p class="text-gray-600 whitespace-pre-line">{{ note.description }}</p>
+            <div>
+                <h2 class="text-lg font-semibold mb-3">
+                    Description
+                </h2>
+
+                <p class="text-gray-700 whitespace-pre-line">
+                    {{ note.description }}
+                </p>
             </div>
 
-            <!-- Trip Reference -->
-            {% if note.trip %}
-            <div class="mt-6 pt-6 border-t border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-700 mb-2">Related Trip</h3>
-                <a href="{% url 'trip-detail' note.trip.pk %}" class="inline-flex items-center text-blue-600 hover:text-blue-800">
-                    {{ note.trip.city }}, {{ note.trip.country }}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
-            {% endif %}
         </div>
+
     </div>
+
 </div>
 {% endblock %}

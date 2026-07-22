@@ -1,55 +1,53 @@
-{% extends 'trip/_base.html' %}
+{% extends "trip/_base.html" %}
 {% load tailwind_filters %}
 
 {% block content %}
 <div class="max-w-2xl mx-auto px-4 py-8">
-    <!-- Form Header -->
-    <div class="mb-8 text-center">
+
+    <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-800">
             {% if object %}
                 Edit Trip
             {% else %}
-                Create New Trip
+                Create Trip
             {% endif %}
         </h1>
+
         <p class="mt-2 text-gray-600">
             {% if object %}
-                Update your trip details
+                Update your travel information.
             {% else %}
-                Plan your next adventure
+                Add a new trip to your travel journal.
             {% endif %}
         </p>
     </div>
 
-    <!-- Form Container -->
-    <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8">
-        <form method="POST" class="space-y-6">
+    <div class="bg-white rounded-xl shadow-md p-8">
+        <form method="post" class="space-y-6">
             {% csrf_token %}
-            
-            <!-- Form Fields -->
-            <div class="grid grid-cols-1 gap-6">
-                {{ form|crispy }}
-            </div>
 
-            <!-- Form Actions -->
-            <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
-                <a href="{% if object %}{% url 'trip-detail' object.pk %}{% else %}{% url 'trip-list' %}{% endif %}" 
-                   class="px-5 py-2.5 text-center text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+            {{ form|crispy }}
+
+            <div class="flex justify-end gap-3 pt-4">
+
+                <a href="{% if object %}{% url 'trip-detail' object.pk %}{% else %}{% url 'trip-list' %}{% endif %}"
+                   class="px-5 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
                     Cancel
                 </a>
-                <button type="submit" 
-                        class="px-5 py-2.5 text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 transition-colors">
+
+                <button type="submit"
+                        class="px-5 py-2 bg-primary-700 text-white rounded-lg hover:bg-primary-800 transition">
                     {% if object %}
-                        Update Trip
+                        Save Changes
                     {% else %}
                         Create Trip
                     {% endif %}
                 </button>
+
             </div>
+
         </form>
     </div>
-</div>
 
-<!-- Tailwind Forms Plugin -->
-<script src="https://cdn.tailwindcss.com/?plugins=forms"></script>
-{% endblock content %}
+</div>
+{% endblock %}
