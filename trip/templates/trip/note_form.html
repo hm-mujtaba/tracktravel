@@ -1,0 +1,55 @@
+{% extends 'trip/_base.html' %}
+{% load tailwind_filters %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-8">
+    <!-- Form Header -->
+    <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-800">
+            {% if object %}
+                Edit Note
+            {% else %}
+                Create New Note
+            {% endif %}
+        </h1>
+        <p class="mt-2 text-gray-600">
+            {% if object %}
+                Update your note details
+            {% else %}
+                Document your experience
+            {% endif %}
+        </p>
+    </div>
+
+    <!-- Form Container -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden p-6 md:p-8">
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Form Fields -->
+            <div class="grid grid-cols-1 gap-6">
+                {{ form|crispy }}
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
+                <a href="{% if object %}{% url 'note-detail' object.pk %}{% else %}{% url 'note-list' %}{% endif %}" 
+                   class="px-5 py-2.5 text-center text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="px-5 py-2.5 text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 transition-colors">
+                    {% if object %}
+                        Update Note
+                    {% else %}
+                        Create Note
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tailwind Forms Plugin -->
+<script src="https://cdn.tailwindcss.com/?plugins=forms"></script>
+{% endblock %}

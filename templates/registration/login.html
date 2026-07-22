@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TripTrak - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0e1628] text-white min-h-screen flex items-center justify-center px-4">
+
+    <div class="bg-[#1c253a] w-full max-w-md p-8 rounded-xl shadow-md space-y-6">
+        <h1 class="text-3xl font-bold text-center">
+            <span class="text-blue-500">Trip</span> Trak
+        </h1>
+
+        {% if form.errors %}
+            <p class="text-sm text-red-400 text-center">Incorrect username or password.</p>
+        {% endif %}
+
+        {% if next %}
+            {% if not user.is_authenticated %}
+                <p class="text-sm text-center text-gray-300">Please log in to view that page:</p>
+            {% else %}
+                <p class="text-sm text-center text-gray-300">Please log in:</p>
+            {% endif %}
+        {% endif %}
+
+        <form action="{% url 'login' %}" method="POST" class="space-y-4">
+            {% csrf_token %}
+
+            <!-- Username -->
+            <div>
+                <label for="id_username" class="block text-sm font-medium mb-1">Username</label>
+                <input type="text" name="username" id="id_username"
+                       class="w-full px-3 py-2 rounded bg-white text-black"
+                       value="{{ form.username.value|default_if_none:'' }}" required>
+                {% for error in form.username.errors %}
+                    <p class="text-sm text-red-400 mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label for="id_password" class="block text-sm font-medium mb-1">Password</label>
+                <input type="password" name="password" id="id_password"
+                       class="w-full px-3 py-2 rounded bg-white text-black" required>
+                {% for error in form.password.errors %}
+                    <p class="text-sm text-red-400 mt-1">{{ error }}</p>
+                {% endfor %}
+            </div>
+
+            <!-- Submit -->
+            <input type="hidden" name="next" value="{{ next }}">
+            <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
+                Login
+            </button>
+        </form>
+
+        <p class="text-sm text-center text-gray-300">
+            Don't have an account?
+            <a href="{% url 'signup' %}" class="underline text-blue-400">Sign up</a>
+        </p>
+    </div>
+
+</body>
+</html>
